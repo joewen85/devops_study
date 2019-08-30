@@ -25,7 +25,7 @@ except FileNotFoundError:
 
         You can run `cp config_example.yml config.yml`, and edit it.
         """
-    raise ImportError(msg)
+    raise FileNotFoundError(msg)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
