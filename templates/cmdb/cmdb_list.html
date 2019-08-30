@@ -62,10 +62,10 @@
                             </div>
                         </form>
                     </div>
-
                     <!-- Main content -->
                     <section class="content">
-
+                        <!--get aliyun table-->
+                        <div>阿里云</div>
                         <table class="table table-bordered table-striped footable toggle-arrow-tiny"
                                data-page-navigation=".paginations">
                             <thead>
@@ -83,12 +83,12 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for instance in Instances.Instance %}
+                            {% for instance in ali.Instances.Instance %}
                                 <tr class="{{ instance.id }}">
                                     <td class="text-center" data-toggle="true">{{ instance.InstanceId }}</td>
                                     <td class="text-center"> {{ instance.InstanceName }} </td>
-                                    <td class="text-center"> {{ instance.Cpu }}核 </td>
-                                    <td class="text-center"> {{ instance.Memory }}M </td>
+                                    <td class="text-center"> {{ instance.Cpu }}核</td>
+                                    <td class="text-center"> {{ instance.Memory }}M</td>
 
                                     <td class="text-center"> {{ instance.VpcAttributes.PrivateIpAddress.IpAddress }} </td>
                                     <td class="text-center">{{ instance.PublicIpAddress.IpAddress }}</td>
@@ -102,18 +102,19 @@
                                         {% if work_order.status == 2 %}
                                             <div class="btn btn-xs btn-info">完成</div>
                                         {% else %}
-                                        {% if group_member_include %}
-                                            <a href="{% url 'workorder:detail' work_order.id %}"
-                                               class="btn btn-xs btn-info">去处理</a>
-                                        {% elif request.user.is_superuser %}
-                                            <a href="{% url 'workorder:detail' work_order.id %}"
-                                               class="btn btn-xs btn-info">我来处理</a>
-                                        {% endif %}
-                                        {% if request.user.id == work_order.applicant_id %}
-                                            <button data-id="{{ work_order.id }}" class="btn btn-xs btn-danger delete"
-                                                    {% if work_order.status == 1 %}disabled{% endif %}>取消
-                                            </button>
-                                        {% endif %}
+                                            {% if group_member_include %}
+                                                <a href="{% url 'workorder:detail' work_order.id %}"
+                                                   class="btn btn-xs btn-info">去处理</a>
+                                            {% elif request.user.is_superuser %}
+                                                <a href="{% url 'workorder:detail' work_order.id %}"
+                                                   class="btn btn-xs btn-info">我来处理</a>
+                                            {% endif %}
+                                            {% if request.user.id == work_order.applicant_id %}
+                                                <button data-id="{{ work_order.id }}"
+                                                        class="btn btn-xs btn-danger delete"
+                                                        {% if work_order.status == 1 %}disabled{% endif %}>取消
+                                                </button>
+                                            {% endif %}
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
@@ -127,8 +128,80 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="dataTables_info" id="editable_info" role="status" aria-live="polite">
-                                    显示 [{{ TotalCount }}] 条数据中的 第 [{{ page_obj.start_index }}] 至
-                                    [{{ page_obj.end_index }}] 的数据
+                                    显示 [{{ ali.TotalCount }}] 条数据中的 第 [{{ ali.page }}] 至
+                                    [{{ ali.page }}] 的数据
+                                </div>
+                            </div>
+                            {% include 'paginator.html' %}
+                        </div><!-- /.paginator -->
+
+                        <!-- get tencentyun table -->
+                        <div>腾讯云</div>
+                         <table class="table table-bordered table-striped footable toggle-arrow-tiny"
+                               data-page-navigation=".paginations">
+                            <thead>
+                            <tr>
+                                <th class="text-center" data-toggle="true">资产ID</th>
+                                <th class="text-center">资产名称</th>
+                                <th class="text-center">CPU</th>
+                                <th class="text-center">内存</th>
+                                <th class="text-center">内网IP地址</th>
+                                <th class="text-center">外网IP地址</th>
+                                <th class="text-center">状态</th>
+                                <th class="text-center">实例过期时间</th>
+                                <th class="text-center">操作</th>
+                                <th class="text-center" data-hide="all">详情</th>
+                            </tr>
+                            </thead>
+                         {{ InstanceSet }}
+                            <tbody>
+                            {% for tencent_instance in tencent.InstanceSet %}
+                                <tr class="{{ tencent_instance.InstanceId }}">
+                                    <td class="text-center" data-toggle="true">{{ tencent_instance.InstanceId }}</td>
+                                    <td class="text-center"> {{ tencent_instance.InstanceName }} </td>
+                                    <td class="text-center"> {{ tencent_instance.CPU }}核</td>
+                                    <td class="text-center"> {{ tencent_instance.Memory }}G</td>
+
+                                    <td class="text-center"> {{ tencent_instance.PrivateIpAddresses }} </td>
+                                    <td class="text-center">{{ tencent_instance.PublicIpAddresses }}</td>
+                                    <td class="text-center"><span
+                                            class="label {% if tencent_instance.InstanceState == 'RUNNING' %}label-success{% elif tencent_instance.InstanceState == 'St' %}label-warning{% elif tencent_instance.InstanceState == 'STOPPED' %}label-danger{% endif %}">{{ tencent_instance.InstanceState }}
+                                    </span>
+                                    </td>
+                                    <td class="text-center"> {{ tencent_instance.ExpiredTime }} </td>
+                                    <td class="text-center">
+                                        {#                                        {% if request.user.id == work_order.assign_id %}#}
+                                        {% if work_order.status == 2 %}
+                                            <div class="btn btn-xs btn-info">完成</div>
+                                        {% else %}
+                                            {% if group_member_include %}
+                                                <a href="{% url 'workorder:detail' work_order.id %}"
+                                                   class="btn btn-xs btn-info">去处理</a>
+                                            {% elif request.user.is_superuser %}
+                                                <a href="{% url 'workorder:detail' work_order.id %}"
+                                                   class="btn btn-xs btn-info">我来处理</a>
+                                            {% endif %}
+                                            {% if request.user.id == work_order.applicant_id %}
+                                                <button data-id="{{ work_order.id }}"
+                                                        class="btn btn-xs btn-danger delete"
+                                                        {% if work_order.status == 1 %}disabled{% endif %}>取消
+                                                </button>
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <pre>{{ work_order.order_contents|safe }}</pre>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <!--分页-->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="dataTables_info" id="editable_info" role="status" aria-live="polite">
+                                    显示 [{{ tencent.TotalCount }}] 条数据中的 第 [{{ ali.page }}] 至
+                                    [{{ ali.page }}] 的数据
                                 </div>
                             </div>
                             {% include 'paginator.html' %}
@@ -153,7 +226,7 @@
             $.ajax({
                 type: "DELETE",
                 url: "", {#% url 'workorder:list' %#}
-                headers: {"X-CSRFtoken":$.cookie("csrftoken")},
+                headers: {"X-CSRFtoken": $.cookie("csrftoken")},
                 data: {"id": work_order_id},
                 success: function (data) {
                     console.log(data);
