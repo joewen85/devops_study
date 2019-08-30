@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load ordertag %}
+{% block title %}工单详情{% endblock %}
+{% block content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                通用工单系统
+            </h1>
+
+
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">工单详情</li>
+
+            </ol>
+        </section>
+        <div class="box-body">
+            <form method="post" action="" class="form-horizontal">
+            {% csrf_token %}
+                {% if msg %}
+                    <div class="alert alert-success alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                        {{ msg | safe }}
+                    </div>
+                {% elif errmsg %}
+                    <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                        {{ errmsg | safe }}
+                    </div>
+                {% endif %}
+
+                <pre>{{ workorder.order_contents|safe }}</pre>
+                {% if workorder.orderfiles %}附近下载：
+                    <a href="http://{{ request.get_host }}/media/{{ workorder.orderfiles }}">{{ workorder.orderfiles |orderfile_name }} </a>
+                {% endif %}
+                <div class="hr-line-dashed"></div>
+
+                {% if workorder.status == 1 %}
+                    <div class="form-group">
+                        <div class="col-sm-12">
+{#                            <textarea name="result_desc" class="form-control" rows="5" placeholder="处理结果" required></textarea>#}
+                            <textarea name="result_desc"></textarea>
+                                <script>
+                                    window.onload = function () {
+                                        CKEDITOR.replace('result_desc', {
+                                            customConfig: "{% static 'js/ckeditor_config.js' %}",
+                                            height: 300,
+                                        });
+                                    };
+                                </script>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                {% endif %}
+
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        {% if workorder.status == 0 %}
+                            <button id="submit_button" class="btn btn-primary" type="submit">接受</button>
+                        {% elif workorder.status == 1 %}
+                            <button id="submit_button" class="btn btn-primary" type="submit">完成</button>
+                        {% endif %}
+                        <button class="btn btn-danger" type="reset">取消</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

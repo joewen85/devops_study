@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                权限更新
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i>权限</a></li>
+                <li class="active">权限更新</li>
+            </ol>
+        </section>
+        <div class="box-body">
+
+    <form method="post"  class="form-horizontal" id="updateForm">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{permissiondatas.id}}">
+        <div class="form-group"><label class="col-sm-2 control-label">权限名：</label>
+            <div class="col-sm-8"><input type="text" name="permissionname" value="{{permissiondatas.name}}" class="form-control" required=""></div>
+        </div>
+        <div class="form-group"><label class="col-sm-2 control-label">权限：</label>
+            <div class="col-sm-8"><input type="text" name="permissioncode" value="{{permissiondatas.codename}}" class="form-control" required=""></div>
+        </div>
+            <div class="col-sm-4 col-sm-offset-2">
+                <button class="btn btn-white" type="reset">取消</button>
+                <button id="submit_button" class="btn btn-primary" type="submit">确认</button>
+            </div>
+        </form>
+</div>
+
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+    $('#submit_button').click(function () {
+        var formdata = $('#updateForm').serialize();
+        console.log(formdata);
+        $.post('', formdata, function (res) {
+            if (res.code === 0) {
+                swal({
+                    "title": "修改成功",
+                    "text": res.result,
+                    "type": "success"
+                }, function () {
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 50);
+                })
+            } else {
+                let errmsgs = $.parseJSON(res.errmsg);
+                let errors_message = '';
+                console.log(errmsgs);
+                for(let index in errmsgs) {
+                    console.log(index, errmsgs[index]);
+                    console.log(index, errmsgs[index][0].message);
+                    errors_message += errmsgs[index][0].message + "\n"
+                };
+                swal('更新失败', errors_message, 'error');
+            }
+        })
+        return false;
+    })
+    </script>
+{% endblock %}

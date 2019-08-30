@@ -1,0 +1,20 @@
+DEBUG: True
+ALLOWED_HOSTS: ['*']
+
+# db config
+NAME:
+USER:
+PASSWORD:
+HOST:
+PORT:
+
+GITLABURL:
+GITLAB_PRIVATE_TOKEN:
+
+# cloud setting
+ALIYUN:
+    AliYun_AK:
+    AliYun_SK:
+TENCENT:
+    Tencent_AK:
+    Tencent_SK:

@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{#{% load ordertag %}#}
+
+{% block title %}申请发布{% endblock %}
+
+{% block content %}
+    <!-- Main row -->
+    <div class="row">
+        <div class="col-md-12">
+
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        代码发布系统
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">申请发布</li>
+                    </ol>
+                </section>
+
+                <div class="box-body">
+    <form method="post" action="" class="form-horizontal">
+    {% csrf_token %}
+        <input type="hidden" name="applicant_id" value="{{ request.user.id }}">
+        {% if msg %}
+            <div class="alert alert-success alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                {{ msg | safe }}
+            </div>
+        {% elif errmsg %}
+            <div class="alert alert-danger alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                {{ errmsg | safe }}
+            </div>
+        {% endif %}
+
+
+        <div class="form-group"><label class="col-sm-2 control-label">选择项目：</label>
+            <div class="col-sm-8">
+                <select name="name" id="name" class="select2_demo_3 form-control">
+                    <option selected="selected">----请选择----</option>
+                    {% for user_project in user_projects %}
+{#                        <option value="{{ user_project.id }}/{{ user_project.name }}">{{ user_project.namespace.name }} / {{ user_project.name }}</option>#}
+                        <option value="{{ user_project.id }}/{{ user_project.name }}">{{ user_project.name_with_namespace }}</option>
+                    {% endfor %}
+                </select>
+                 {% for error in forms.name.errors %}<span style="color: red">{{ error }}</span>{% endfor %}
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+
+        <!-- 版本 -->
+        <div class="form-group"><label class="col-sm-2 control-label">选择版本：</label>
+            <div class="col-sm-8">
+                <!-- select name="version" id = "version"  class="select_version form-control" onchange="getTagDesc(this.id)" -->
+                <select name="version" id = "version"  class="select_version form-control">
+                   <option selected="selected">----请选择----</option>
+                </select>
+                 {% for error in forms.version.errors %}<span style="color: red">{{ error }}</span>{% endfor %}
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+
+
+        <div class="form-group"><label class="col-sm-2 control-label">版本描述：</label>
+            <div class="col-sm-8">
+                <input type="text" name ="version_desc" id="version_desc" class="form-control" readonly="readonly"  value="" placeholder="版本描述" />
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+
+        <!-- 分支 -->
+         <div class="form-group"><label class="col-sm-2 control-label">选择分支：</label>
+            <div class="col-sm-8">
+                <!-- select name="version" id = "version"  class="select_version form-control" onchange="getTagDesc(this.id)" -->
+                <select name="branch" id = "branch"  class="select_version form-control">
+                   <option selected="selected">----请选择----</option>
+                </select>
+                 {% for error in forms.branch.errors %}<span style="color: red">{{ error }}</span>{% endfor %}
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+
+
+        <div class="form-group"><label class="col-sm-2 control-label">分支描述：</label>
+            <div class="col-sm-8">
+                <input type="text" name ="branch_desc" id="branch_desc" class="form-control" readonly="readonly"  value="" placeholder="分支描述" />
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+
+{#        <div class="form-group"><label class="col-sm-2 control-label">指派给：</label>#}
+{#            <div class="col-sm-8">#}
+{#                <select name="assign" class="select2_demo_4 form-control">#}
+{#                   <option selected="selected">----请选择----</option>#}
+{#                    {% for user in assign_to_users %}#}
+{#                        <option value="{{ user.id }}">{{ user.name_cn }}</option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+{#                {% for error in forms.assigned_to.errors %}<span style="color: red">{{ error }}</span>{% endfor %}#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="hr-line-dashed"></div>#}
+
+         <div class="form-group"><label class="col-sm-2 control-label">更新详情：</label>
+            <div class="col-sm-8">
+             <textarea class="form-control" name ="update_detail" rows="5" placeholder="更新详情"></textarea>
+             {% for error in forms.update_detail.errors %}<span style="color: red">{{ error }}</span>{% endfor %}
+            </div>
+        </div>
+        <div class="hr-line-dashed"></div>
+
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-2">
+                <button id="submit_button" class="btn btn-primary" type="submit">申请</button>
+                <button class="btn btn-white" type="reset">取消</button>
+            </div>
+        </div>
+    </form>
+</div>
+                <!-- /.content-wrapper -->
+            </div>
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+{% endblock %}
+{% block js %}
+
+<script>
+$(".select2_demo_3").select2({
+    placeholder: "请选择你要申请上线的项目",
+    allowClear: true
+});
+
+$(".select_version").select2({
+   placeholder: "请您选择要发布的版本",
+    allowClear: true
+});
+
+$(".select2_demo_4").select2({
+        placeholder: "指派给你要申请的人",
+        allowClear: true
+});
+
+let tags = '';
+$("#name").change(function(){
+    var project_id = $(this).val();
+    console.log(project_id);
+    $.ajax({
+        type: "GET",
+        url: "{% url 'deploy:project_versions' %}",
+        data:{"project_id": project_id},
+        success: function(data){
+            console.log(data);
+            let option_html = "<option selected>----请选择----</option>";
+            tags = data;
+            $.each(data, function(i,k) {
+                option_html += "<option value="+ k[0]+">"+ k[0] + "</option>"
+            });
+            console.log(option_html);
+            $("#version").html(option_html);
+
+         }
+    })
+});
+
+$("#version").change(function(){
+    let tag = $(this).val();
+    $.each(tags, function(i,k) {
+         if(tag === k[0]){
+           $('#version_desc').val(k[1]);
+         }
+    })
+ });
+
+let branchs = '';
+$("#name").change(function(){
+    var project_id = $(this).val();
+    console.log(project_id);
+    $.ajax({
+        type: "GET",
+        url: "{% url 'deploy:project_branch' %}",
+        data:{"project_id": project_id},
+        success: function(data){
+            console.log(data);
+            let option_html = "<option selected>----请选择----</option>";
+            branchs = data;
+            $.each(data, function(i,k) {
+                option_html += "<option value="+ k[0]+">"+ k[0] + "</option>"
+            });
+            console.log(option_html);
+            $("#branch").html(option_html);
+
+         }
+    })
+});
+
+$("#branch").change(function(){
+    let branch = $(this).val();
+    $.each(branchs, function(i,k) {
+         if(branch === k[0]){
+           $('#branch_desc').val(k[1]);
+         }
+    })
+ })
+</script>
+
+{% endblock %}
