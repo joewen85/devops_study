@@ -18,7 +18,7 @@ import yaml
 try:
     f = open('config.yml')
     CONF = yaml.load(f, Loader=yaml.FullLoader)
-except ImportError:
+except FileNotFoundError:
     msg = """
 
         Error: No config file found.
