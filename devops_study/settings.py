@@ -23,7 +23,7 @@ except ImportError:
 
         Error: No config file found.
 
-        You can run `cp config_example.py config.py`, and edit it.
+        You can run `cp config_example.yml config.yml`, and edit it.
         """
     raise ImportError(msg)
 
