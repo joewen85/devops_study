@@ -204,3 +204,8 @@ AliYun_SK = CONF['ALIYUN']['AliYun_SK']
 TencentYun_AK = CONF['TENCENT']['Tencent_AK']
 TencentYun_SK = CONF['TENCENT']['Tencent_SK']
 
+# jenkins setting
+JENKINS_URL = CONF['JENKINS_URL']
+JENKINS_USER_ID = CONF['JENKINS_USER_ID']
+JENKINS_TOKEN = CONF['JENKINS_TOKEN']
+

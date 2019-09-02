@@ -18,3 +18,8 @@ ALIYUN:
 TENCENT:
     Tencent_AK:
     Tencent_SK:
+
+# jenkins setting
+JENKINS_URL:
+JENKINS_USER_ID:
+JENKINS_TOKEN:
