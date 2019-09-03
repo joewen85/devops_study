@@ -26,3 +26,5 @@ aliyun-python-sdk-core==2.13.9
 aliyun-python-sdk-core-v3==2.13.9
 aliyun-python-sdk-ecs==4.17.1
 tencentcloud-sdk-python==3.0.86
+gevent==1.4.0
+gevent-websocket==0.10.1

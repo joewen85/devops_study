@@ -17,7 +17,9 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from users.views import IndexView, LoginView
 from django.views.static import serve
-from .settings import MEDIA_ROOT
+from .settings import MEDIA_ROOT, STATIC_ROOT
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +31,7 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('cmdb/', include('cmdb.urls')),
     path('deploy/', include('deploy.urls')),
+    re_path('static/(?P<path>.*)$', serve, {'document_root': STATIC_ROOT}, name='static'),
 
 ]
 
