@@ -24,7 +24,10 @@ aliyun-python-sdk-ecs==4.17.1
 PyYAML==5.1.2
 aliyun-python-sdk-core==2.13.9
 aliyun-python-sdk-core-v3==2.13.9
-aliyun-python-sdk-ecs==4.17.1
-tencentcloud-sdk-python==3.0.86
+aliyun-python-sdk-ecs==4.17.4
+tencentcloud-sdk-python==3.0.88,,
 gevent==1.4.0
 gevent-websocket==0.10.1
+django-celery==3.3.1
+celery-with-redis==3.0
+celery==4.3.0
